@@ -1,21 +1,10 @@
 package com.utils;
 
-import java.util.Scanner;
-
 /**
  * @author Leboc Philippe
+ * Classe utilitaire de l'application.
  */
 public final class Util {
-
-    public static final Scanner sc = new Scanner(System.in);
-
-    public static void print(String str) {
-        print(str, true);
-    }
-
-    public static void print(String str, boolean nl) {
-        if(nl) System.out.println(str); else System.out.print(str);
-    }
 
     public static int roll(int faces, int nbrOfDice) {
         int res = 0;
