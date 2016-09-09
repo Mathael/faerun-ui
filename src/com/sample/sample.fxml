@@ -29,7 +29,7 @@
       </Label>
       <ImageView fx:id="castle_blue" fitHeight="64.0" fitWidth="64.0" layoutX="23.0" layoutY="143.0" pickOnBounds="true" preserveRatio="true" />
       <ImageView fx:id="castle_red" fitHeight="64.0" fitWidth="64.0" layoutX="1015.0" layoutY="143.0" pickOnBounds="true" preserveRatio="true" />
-      <Label fx:id="system_label" contentDisplay="TOP" layoutX="250.0" layoutY="302.0" prefWidth="600.0" textAlignment="CENTER" textFill="#22a83f">
+      <Label fx:id="system_label" alignment="CENTER" contentDisplay="TOP" layoutX="250.0" layoutY="302.0" prefWidth="600.0" textAlignment="CENTER" textFill="#22a83f">
          <font>
             <Font name="System Bold" size="18.0" />
          </font>
