@@ -5,6 +5,7 @@ import com.utils.Util;
 
 /**
  * @author Leboc Philippe
+ * Cette classe représente une creature du jeu
  */
 public abstract class Character implements Soldier {
 
@@ -49,6 +50,9 @@ public abstract class Character implements Soldier {
         this.cost = cost;
     }
 
+    /**
+     * @return true si l'entité est considérée comme morte, false sinon
+     */
     public boolean isDead() {
         return getCurrentHealth() <= 0;
     }

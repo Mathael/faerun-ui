@@ -13,7 +13,7 @@ import static com.enums.TeamColor.RED;
 /**
  * @author Leboc Philippe
  * Il s'agit du plateau du jeu.
- * Cette classe sert spécifiquement à faire en sorte que le jeu se déroule pas à pas en suivant les différentes phases.
+ * Cette classe permet d'executer les différentes actions du jeu.
  * Elle contient toutes les cases du plateau ainsi que les deux chateaux. Elle à donc accès à l'intégralité du jeu.
  */
 public final class Battlefield {
@@ -153,7 +153,6 @@ public final class Battlefield {
                             newCharCreation = null;
                         } else {
                             // TODO: signaler qu'il n'a pas les ressources nécessaires pour acheter
-                            GameUI.getInstance().sendMessage("Vous n'avez pas les ressources nécessaires !");
                         }
                     }
                 }
@@ -165,6 +164,10 @@ public final class Battlefield {
         }
     }
 
+    /**
+     * Démarre la phase d'attaque:
+     * - Parcours l'ensemble des cases et, pour chaque cases, définit les attaquants et les défenseurs et ordonne d'effectuer l'action.
+     */
     public void attackPhase() {
         for (Case current : getCases())
         {
@@ -176,6 +179,11 @@ public final class Battlefield {
         }
     }
 
+    /**
+     * Cette fonction prends tous les attaquants et leur fais donner un coup à toutes les cibles
+     * @param attackers l'ensemble des attaquants
+     * @param targets l'ensenble des cibles
+     */
     private void doAttack(ArrayList<Character> attackers, ArrayList<Character> targets) {
         attackers.forEach(k -> {
             for (int i = 0; i < targets.size(); i++) {
@@ -198,6 +206,9 @@ public final class Battlefield {
         getRed().getWasBought().clear();
     }
 
+    /**
+     * Attribue le nombre de ressources gagné par les chateaux à chaque tour
+     */
     public void giveTurnRewards() {
         getBlue().addResources(1);
         getRed().addResources(1);

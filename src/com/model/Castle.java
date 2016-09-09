@@ -40,6 +40,10 @@ public final class Castle {
         this.color = color;
     }
 
+    /**
+     * Ajoute une nouvelle unité dans la liste de construction et déduit le coût en points de ressources
+     * @param character l'unité à créer
+     */
     public void buildUnit(Character character) {
         addResources(-character.getCost());
         wasBought.add(character);

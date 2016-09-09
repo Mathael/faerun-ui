@@ -44,6 +44,9 @@ public final class Case {
         this.redCharacters = redCharacters;
     }
 
+    /**
+     * @return true si un combat peut avoir lieu sur cette case, false sinon.
+     */
     public boolean canLaunchBattle() {
         return !getBlueCharacters().isEmpty() && !getRedCharacters().isEmpty();
     }
