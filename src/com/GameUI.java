@@ -20,7 +20,7 @@ import static com.enums.TeamColor.RED;
  * Gestion complete de l'interface de l'utilisateur.
  * ATTENTION : GameUI est un Singleton !
  */
-public class GameUI {
+public final class GameUI {
 
     private Scene scene;
 
@@ -75,6 +75,10 @@ public class GameUI {
         return buyOption;
     }
 
+    /**
+     * Affiche une boite de dialogue demandant le nombre de case désirées [5, 10, 15]
+     * @return le nombre choisi par l'utilisateur, 5 par défaut.
+     */
     public int chooseNumberOfCaseDialog() {
         List<String> choices = new ArrayList<>();
         choices.add("5");
@@ -96,10 +100,10 @@ public class GameUI {
     }
 
     /**
-     * Affiche
-     * @param caseNumber
-     * @param blue
-     * @param red
+     * Affiche le contenu de l'ensemble des cases du plateau
+     * @param caseNumber numero de la case
+     * @param blue toutes les unités de l'équipe BLUE
+     * @param red toutes les unités de l'équipe RED
      */
     public void displayCase(int caseNumber, final ArrayList<Character> blue, final ArrayList<Character> red) {
         final GridPane grid = (GridPane)scene.lookup("#game_grid_5");
@@ -160,17 +164,6 @@ public class GameUI {
         label.setWrapText(true);
         label.setTextFill(labelColor);
         unitsGrid.add(label, 0, index);
-    }
-
-    public void clearMessage() {
-        final Label label = (Label) scene.lookup("#system_label");
-        if(label != null) label.setText("");
-    }
-
-    public void sendMessage(String text) {
-        final Label label = (Label) scene.lookup("#system_label");
-        if(label != null) label.setText(text);
-
     }
 
     public static GameUI getInstance()
