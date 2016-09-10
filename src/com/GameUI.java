@@ -2,11 +2,13 @@ package com;
 
 import com.actors.Character;
 import com.enums.TeamColor;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
+import javafx.stage.Modality;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +37,8 @@ public final class GameUI {
      * @return le code (sous forme d'entier) de l'unité à acheter.
      */
     public int chooseBuyOptionsDialog(final TeamColor color, final int resources) {
-        final Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        final Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.initModality(Modality.WINDOW_MODAL);
         alert.setY(0);
         alert.setX(0);
         alert.setTitle("Achat de troupe");
@@ -82,8 +85,8 @@ public final class GameUI {
     public int chooseNumberOfCaseDialog() {
         List<String> choices = new ArrayList<>();
         choices.add("5");
-        choices.add("10");
-        choices.add("15");
+        choices.add("8");
+        choices.add("12");
 
         ChoiceDialog<String> dialog = new ChoiceDialog<>("5", choices);
         dialog.setTitle("Choix du plateau");
@@ -92,11 +95,25 @@ public final class GameUI {
 
         // Traditional way to get the response value.
         Optional<String> result = dialog.showAndWait();
+        int choice = 5;
         if (result.isPresent()){
-            return Integer.parseInt(result.get());
+            choice = Integer.parseInt(result.get());
         }
 
-        return 5;
+        final GridPane grid = (GridPane)scene.lookup("#game_grid");
+        if(grid != null)
+        {
+            grid.setGridLinesVisible(true);
+            for (int i = 0; i < choice; i++)
+            {
+                ColumnConstraints colConst = new ColumnConstraints();
+                colConst.setPercentWidth(100.0 / choice);
+                grid.addColumn(choice);
+                grid.getColumnConstraints().add(colConst);
+            }
+        }
+
+        return choice;
     }
 
     /**
@@ -106,7 +123,7 @@ public final class GameUI {
      * @param red toutes les unités de l'équipe RED
      */
     public void displayCase(int caseNumber, final ArrayList<Character> blue, final ArrayList<Character> red) {
-        final GridPane grid = (GridPane)scene.lookup("#game_grid_5");
+        final GridPane grid = (GridPane)scene.lookup("#game_grid");
         GridPane unitsGrid = (GridPane)scene.lookup("#unitsGrid_"+caseNumber);
         final int unitAmountOnCase = blue.size() + red.size();
 
@@ -158,11 +175,13 @@ public final class GameUI {
     }
 
     private void createLabel(GridPane unitsGrid, Character character, int index, TeamColor color) {
-        Color labelColor = color == BLUE ? Color.BLUE : Color.RED;
+        final Color labelColor = color == BLUE ? Color.BLUE : Color.RED;
 
         final Label label = new Label(character.toString());
-        label.setWrapText(true);
+        label.setWrapText(false);
         label.setTextFill(labelColor);
+        label.setAlignment(Pos.CENTER);
+        label.setPrefWidth(Double.MAX_VALUE);
         unitsGrid.add(label, 0, index);
     }
 

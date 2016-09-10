@@ -2,21 +2,15 @@
 
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="350.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/8.0.76-ea" xmlns:fx="http://javafx.com/fxml/1">
+<Pane fx:id="battlefield" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="350.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/8.0.76-ea" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <GridPane fx:id="game_grid_5" gridLinesVisible="true" layoutX="100.0" layoutY="75.0" prefHeight="200.0" prefWidth="900.0">
+      <GridPane fx:id="game_grid" gridLinesVisible="false" layoutX="100.0" layoutY="75.0" prefHeight="200.0" prefWidth="900.0">
         <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
         </columnConstraints>
         <rowConstraints>
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -29,10 +23,5 @@
       </Label>
       <ImageView fx:id="castle_blue" fitHeight="64.0" fitWidth="64.0" layoutX="23.0" layoutY="143.0" pickOnBounds="true" preserveRatio="true" />
       <ImageView fx:id="castle_red" fitHeight="64.0" fitWidth="64.0" layoutX="1015.0" layoutY="143.0" pickOnBounds="true" preserveRatio="true" />
-      <Label fx:id="system_label" alignment="CENTER" contentDisplay="TOP" layoutX="250.0" layoutY="302.0" prefWidth="600.0" textAlignment="CENTER" textFill="#22a83f">
-         <font>
-            <Font name="System Bold" size="18.0" />
-         </font>
-      </Label>
    </children>
 </Pane>

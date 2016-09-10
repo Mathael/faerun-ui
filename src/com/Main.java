@@ -6,6 +6,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
@@ -48,7 +49,7 @@ public class Main extends Application {
         primaryStage.show();
 
         // Récupération du choix du nombre de cases.
-        int casesCount = GameUI.getInstance().chooseNumberOfCaseDialog();
+        final int casesCount = GameUI.getInstance().chooseNumberOfCaseDialog();
 
         // Creation du plateau, des chateaux et des cases.
         final Battlefield field = new Battlefield(casesCount);
