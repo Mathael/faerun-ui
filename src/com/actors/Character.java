@@ -1,5 +1,6 @@
 package com.actors;
 
+import com.exceptions.CriticalHitException;
 import com.interfaces.Soldier;
 import com.utils.Util;
 
@@ -57,11 +58,15 @@ public abstract class Character implements Soldier {
         return getCurrentHealth() <= 0;
     }
 
+    public void doDie() {
+        setCurrentHealth(0);
+    }
+
     @Override
-    public void handleAttack(Character character) {
+    public void handleAttack(Character character) throws CriticalHitException {
         int dmg = Util.roll(3, getNumberOfDice());
-        if(dmg >= (getNumberOfDice() * 3) - 5) {
-            dmg *= 2;
+        if(dmg >= (getNumberOfDice() * 3) - 10) {
+            throw new CriticalHitException("Critical hit !");
         }
         character.handleReceiveDamage(dmg);
     }

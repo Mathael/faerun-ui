@@ -4,6 +4,7 @@ import com.GameUI;
 import com.actors.*;
 import com.actors.Character;
 import com.enums.TeamColor;
+import com.exceptions.CriticalHitException;
 
 import java.util.ArrayList;
 
@@ -185,13 +186,18 @@ public final class Battlefield {
      * @param targets l'ensenble des cibles
      */
     private void doAttack(ArrayList<Character> attackers, ArrayList<Character> targets) {
-        attackers.forEach(k -> {
-            for (int i = 0; i < targets.size(); i++) {
-                final Character currentTarget = targets.get(i);
-                k.handleAttack(currentTarget);
-                if(currentTarget.isDead()) targets.remove(currentTarget);
+        try {
+            for (Character k : attackers) {
+                for (int i = 0; i < targets.size(); i++) {
+                    final Character currentTarget = targets.get(i);
+                    k.handleAttack(currentTarget);
+                    if (currentTarget.isDead()) targets.remove(currentTarget);
+                }
             }
-        });
+        }catch(CriticalHitException e) {
+            // TODO: afficher l'exception levée quelque part dans l'UI
+            targets.forEach(k -> {k.doDie(); targets.remove(k);});
+        }
     }
 
     /**
@@ -207,7 +213,7 @@ public final class Battlefield {
     }
 
     /**
-     * Attribue le nombre de ressources gagné par les chateaux à chaque tour
+     * Attribue le nombre de ressources gagnées par les chateaux à chaque tour
      */
     public void giveTurnRewards() {
         getBlue().addResources(1);
