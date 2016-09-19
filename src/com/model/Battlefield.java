@@ -6,7 +6,6 @@ import com.actors.Character;
 import com.enums.MovementSpeed;
 import com.enums.TeamColor;
 import com.exceptions.CriticalHitException;
-import com.sun.org.apache.xalan.internal.xsltc.compiler.util.Util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -255,7 +254,7 @@ public final class Battlefield {
             // TODO: afficher l'exception levée quelque part dans l'UI
             targets.forEach(Character::doDie);
             targets.clear();
-            Util.println("Critical Hit !");
+            System.out.println("Critical Hit !");
         }
     }
 
