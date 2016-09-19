@@ -1,5 +1,7 @@
 package com.actors;
 
+import com.enums.MovementSpeed;
+
 /**
  * @author Leboc Philippe
  */
@@ -10,6 +12,7 @@ public class ChefNain extends GuerrierNain {
         setName("Chef Nain");
         setCost(4);
         setNumberOfDice(10);
+        setSpeed(MovementSpeed.SLOW);
     }
 
     @Override

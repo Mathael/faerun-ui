@@ -3,6 +3,7 @@ package com.model;
 import com.GameUI;
 import com.actors.*;
 import com.actors.Character;
+import com.enums.MovementSpeed;
 import com.enums.TeamColor;
 import com.exceptions.CriticalHitException;
 import com.sun.org.apache.xalan.internal.xsltc.compiler.util.Util;
@@ -76,83 +77,89 @@ public final class Battlefield {
      * Chaque créature de l'équipe est donc déplacée une unique fois vers la droite.
      * Le même schema est reproduit en sens inverse pour l'équipe rouge.
      *
-     * Déplace toutes les unités d'une couleur se trouvant sur la case courante vers la case suivante.
+     * Ce code doit être factorisé, mais j'ai la flemme...
      */
-    public void movementPhase() {
+    public void movementPhase()
+    {
         // Blue Team
-        for (int i = this.getCases().length-1; i > 0; i--)
+        for (int i = getCases().length-1; i > 0; i--)
         {
-            final Case currentCase = this.getCase(i);
-            final Case nextCase = this.getCase(i+1); // suivante à gauche
-            final Case thirdCase = i + 2 <= getCases().length ? this.getCase(i+2) : getCase(i+1); // suivante encore
+            final Case currentCase = this.getCase(i); // La case la plus à droite
+            final Case nextCase = getCase(i + 1); // La case suivante
+            final Case next2ndCase = i + 2 > getCases().length ? getCase(i + 1) : getCase(i + 2); // Celle d'après encore...
+            final List<Character> currentCaseCharacters = currentCase.getBlueCharacters();
 
-            // Collect soldiers
-            final List<Character> gobelins = currentCase.getBlueCharacters().stream().filter(k -> k instanceof Gobelin).collect(Collectors.toList());
-            final List<Character> movingChiefs = currentCase.getBlueCharacters().stream().filter(k -> k.isChief() && k.isCanMoveNextRound()).collect(Collectors.toList());
-            final List<Character> blockedChiefs = currentCase.getBlueCharacters().stream().filter(k -> k.isChief() && !k.isCanMoveNextRound()).collect(Collectors.toList());
-            final List<Character> characters = currentCase.getBlueCharacters().stream().filter(k ->
-                    !(k instanceof Gobelin) &&
-                    (!(k.isChief()) ||
-                    (k.isChief() && k.isCanMoveNextRound()))
-            ).collect(Collectors.toList());
+            // Récupère les créatures en fonction de leur vitesse de mouvement
+            final List<Character> normalSpeedCharacters = currentCaseCharacters.stream().filter(k -> k.getSpeed() == MovementSpeed.NORMAL).collect(Collectors.toList());
+            final List<Character> highSpeedCharacters = currentCaseCharacters.stream().filter(k -> k.getSpeed() == MovementSpeed.SPEED).collect(Collectors.toList());
+            final List<Character> slowSpeedCharacters = currentCaseCharacters.stream().filter(k -> k.getSpeed() == MovementSpeed.SLOW && k.canMove()).collect(Collectors.toList());
 
-            // Evaluate movement
-            if(nextCase.getRedCharacters().isEmpty() && !gobelins.isEmpty() && currentCase.getRedCharacters().isEmpty()) {
-                thirdCase.getBlueCharacters().addAll(gobelins);
-                currentCase.getBlueCharacters().removeAll(gobelins);
-            }
-            else if (currentCase.getRedCharacters().isEmpty() && !gobelins.isEmpty()) {
-                nextCase.getBlueCharacters().addAll(gobelins);
-                currentCase.getBlueCharacters().removeAll(gobelins);
-            }
+            // Vérifie que les unitées de la case en cours puissent bouger sur la case suivante
+            if(!currentCase.hasRedCharacters())
+            {
+                // Les créature faisant un simple mouvement bouge sur la suivante
+                if(!normalSpeedCharacters.isEmpty()) {
+                    nextCase.getBlueCharacters().addAll(normalSpeedCharacters);
+                    currentCaseCharacters.removeAll(normalSpeedCharacters);
+                }
 
-            if(!characters.isEmpty() && currentCase.getRedCharacters().isEmpty()) {
-                nextCase.getBlueCharacters().addAll(characters);
-                nextCase.getBlueCharacters().addAll(movingChiefs);
-                currentCase.getBlueCharacters().removeAll(characters);
-                currentCase.getBlueCharacters().removeAll(movingChiefs);
+                // Les créatures faisant un double mouvement vérifie que la case suivante soit aussi libre pour éviter de sauter au dessus des unités ennemies
+                if(!highSpeedCharacters.isEmpty()) {
+                    if(!nextCase.hasRedCharacters()) {
+                        next2ndCase.getBlueCharacters().addAll(highSpeedCharacters);
+                    } else nextCase.getBlueCharacters().addAll(highSpeedCharacters);
+                    currentCase.getBlueCharacters().removeAll(highSpeedCharacters);
+                }
 
-                // Assignation des états pour le prochain tour
-                movingChiefs.forEach(c -> c.setCanMoveNextRound(false));
-                blockedChiefs.forEach(c -> c.setCanMoveNextRound(true));
+                // Les créatures aux mouvements réduits bougent aussi
+                if(!slowSpeedCharacters.isEmpty()) {
+                    nextCase.getBlueCharacters().addAll(slowSpeedCharacters);
+                    currentCase.getBlueCharacters().removeAll(slowSpeedCharacters);
+                    slowSpeedCharacters.forEach(k -> k.setCanMove(false));
+                }
+
+                currentCase.getBlueCharacters().stream().filter(k-> !k.canMove()).forEach(c -> c.setCanMove(true));
             }
         }
 
         // Red Team
-        for(int i = 2; i <= this.getCases().length; i++)
+        for (int i = 2; i <= getCases().length; i++)
         {
-            final Case currentCase = this.getCase(i);
-            final Case nextCase = this.getCase(i-1);
-            final Case thirdCase = i - 2 > 0 ? this.getCase(i-2) : this.getCase(i-1);
+            final Case currentCase = this.getCase(i); // La case la plus à droite
+            final Case nextCase = getCase(i - 1); // La case suivante
+            final Case next2ndCase = i-2 <= 0 ? getCase(i - 1) : getCase(i - 2); // Celle d'après encore...
+            final List<Character> currentCaseCharacters = currentCase.getRedCharacters();
 
-            final List<Character> gobelins = currentCase.getRedCharacters().stream().filter(k -> k instanceof Gobelin).collect(Collectors.toList());
-            final List<Character> movingChiefs = currentCase.getRedCharacters().stream().filter(k -> k.isChief() && k.isCanMoveNextRound()).collect(Collectors.toList());
-            final List<Character> blockedChiefs = currentCase.getRedCharacters().stream().filter(k -> k.isChief() && !k.isCanMoveNextRound()).collect(Collectors.toList());
-            final List<Character> characters = currentCase.getRedCharacters().stream().filter(k ->
-                !(k instanceof Gobelin) &&
-                (!(k.isChief()) ||
-                (k.isChief() && k.isCanMoveNextRound()))
-            ).collect(Collectors.toList());
+            // Récupère les créatures en fonction de leur vitesse de mouvement
+            final List<Character> normalSpeedCharacters = currentCaseCharacters.stream().filter(k -> k.getSpeed() == MovementSpeed.NORMAL).collect(Collectors.toList());
+            final List<Character> highSpeedCharacters = currentCaseCharacters.stream().filter(k -> k.getSpeed() == MovementSpeed.SPEED).collect(Collectors.toList());
+            final List<Character> slowSpeedCharacters = currentCaseCharacters.stream().filter(k -> k.getSpeed() == MovementSpeed.SLOW && k.canMove()).collect(Collectors.toList());
 
-            // Evaluate movement
-            if(nextCase.getBlueCharacters().isEmpty() && !gobelins.isEmpty() && currentCase.getBlueCharacters().isEmpty()) {
-                thirdCase.getRedCharacters().addAll(gobelins);
-                currentCase.getRedCharacters().removeAll(gobelins);
-            }
-            else if (currentCase.getBlueCharacters().isEmpty() && !gobelins.isEmpty()) {
-                nextCase.getRedCharacters().addAll(gobelins);
-                currentCase.getRedCharacters().removeAll(gobelins);
-            }
+            // Vérifie que les unitées de la case en cours puissent bouger sur la case suivante
+            if(!currentCase.hasBlueCharacters())
+            {
+                // Les créature faisant un simple mouvement bouge sur la suivante
+                if(!normalSpeedCharacters.isEmpty()) {
+                    nextCase.getRedCharacters().addAll(normalSpeedCharacters);
+                    currentCaseCharacters.removeAll(normalSpeedCharacters);
+                }
 
-            if(!characters.isEmpty() && currentCase.getBlueCharacters().isEmpty()) {
-                nextCase.getRedCharacters().addAll(characters);
-                nextCase.getRedCharacters().addAll(movingChiefs);
-                currentCase.getRedCharacters().removeAll(characters);
-                currentCase.getRedCharacters().removeAll(movingChiefs);
+                // Les créatures faisant un double mouvement vérifie que la case suivante soit aussi libre pour éviter de sauter au dessus des unités ennemies
+                if(!highSpeedCharacters.isEmpty()) {
+                    if(!nextCase.hasBlueCharacters()) {
+                        next2ndCase.getRedCharacters().addAll(highSpeedCharacters);
+                    } else nextCase.getRedCharacters().addAll(highSpeedCharacters);
+                    currentCase.getRedCharacters().removeAll(highSpeedCharacters);
+                }
 
-                // Assignation des états pour le prochain tour
-                movingChiefs.forEach(c -> c.setCanMoveNextRound(false));
-                blockedChiefs.forEach(c -> c.setCanMoveNextRound(true));
+                // Les créatures aux mouvements réduits bougent aussi
+                if(!slowSpeedCharacters.isEmpty()) {
+                    nextCase.getRedCharacters().addAll(slowSpeedCharacters);
+                    currentCase.getRedCharacters().removeAll(slowSpeedCharacters);
+                    slowSpeedCharacters.forEach(k -> k.setCanMove(false));
+                }
+
+                currentCase.getRedCharacters().stream().filter(k-> !k.canMove()).forEach(c -> c.setCanMove(true));
             }
         }
     }

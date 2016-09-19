@@ -51,6 +51,14 @@ public final class Case {
         return !getBlueCharacters().isEmpty() && !getRedCharacters().isEmpty();
     }
 
+    public boolean hasRedCharacters() {
+        return !getRedCharacters().isEmpty();
+    }
+
+    public boolean hasBlueCharacters() {
+        return !getBlueCharacters().isEmpty();
+    }
+
     @Override
     public String toString() {
         String result = "========== " + getNumber() + " ==========\r\n";

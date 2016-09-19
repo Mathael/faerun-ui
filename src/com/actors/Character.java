@@ -1,5 +1,6 @@
 package com.actors;
 
+import com.enums.MovementSpeed;
 import com.exceptions.CriticalHitException;
 import com.interfaces.Soldier;
 import com.utils.Util;
@@ -14,13 +15,15 @@ public abstract class Character implements Soldier {
     private int currentHealth;
     private int numberOfDice;
     private int cost;
-    private boolean canMoveNextRound;
+    private boolean canMove;
     private boolean isChief;
+    private MovementSpeed speed;
 
     public Character() {
         setCurrentHealth(100);
-        setCanMoveNextRound(true);
+        setCanMove(true);
         setChief(false);
+        setSpeed(MovementSpeed.NORMAL);
     }
 
     public String getName() {
@@ -55,12 +58,12 @@ public abstract class Character implements Soldier {
         this.cost = cost;
     }
 
-    public boolean isCanMoveNextRound() {
-        return canMoveNextRound;
+    public boolean canMove() {
+        return canMove;
     }
 
-    public void setCanMoveNextRound(boolean canMoveNextRound) {
-        this.canMoveNextRound = canMoveNextRound;
+    public void setCanMove(boolean canMove) {
+        this.canMove = canMove;
     }
 
     public boolean isChief() {
@@ -69,6 +72,14 @@ public abstract class Character implements Soldier {
 
     public void setChief(boolean chief) {
         isChief = chief;
+    }
+
+    public MovementSpeed getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(MovementSpeed speed) {
+        this.speed = speed;
     }
 
     /**
