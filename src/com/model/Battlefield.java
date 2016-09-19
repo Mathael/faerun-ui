@@ -5,8 +5,11 @@ import com.actors.*;
 import com.actors.Character;
 import com.enums.TeamColor;
 import com.exceptions.CriticalHitException;
+import com.sun.org.apache.xalan.internal.xsltc.compiler.util.Util;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.enums.TeamColor.BLUE;
 import static com.enums.TeamColor.RED;
@@ -72,6 +75,8 @@ public final class Battlefield {
      * Les bleus étant à gauche j'éffectue un décalage du curseur de la droite vers la gauche
      * Chaque créature de l'équipe est donc déplacée une unique fois vers la droite.
      * Le même schema est reproduit en sens inverse pour l'équipe rouge.
+     *
+     * Déplace toutes les unités d'une couleur se trouvant sur la case courante vers la case suivante.
      */
     public void movementPhase() {
         // Blue Team
@@ -79,10 +84,37 @@ public final class Battlefield {
         {
             final Case currentCase = this.getCase(i);
             final Case nextCase = this.getCase(i+1); // suivante à gauche
+            final Case thirdCase = i + 2 <= getCases().length ? this.getCase(i+2) : getCase(i+1); // suivante encore
 
-            // Mouvement seulement si pas les deux couleurs sur la même case
-            if (!currentCase.getBlueCharacters().isEmpty() && currentCase.getRedCharacters().isEmpty()) {
-                doMoveFromCase(currentCase, nextCase, BLUE);
+            // Collect soldiers
+            final List<Character> gobelins = currentCase.getBlueCharacters().stream().filter(k -> k instanceof Gobelin).collect(Collectors.toList());
+            final List<Character> movingChiefs = currentCase.getBlueCharacters().stream().filter(k -> k.isChief() && k.isCanMoveNextRound()).collect(Collectors.toList());
+            final List<Character> blockedChiefs = currentCase.getBlueCharacters().stream().filter(k -> k.isChief() && !k.isCanMoveNextRound()).collect(Collectors.toList());
+            final List<Character> characters = currentCase.getBlueCharacters().stream().filter(k ->
+                    !(k instanceof Gobelin) &&
+                    (!(k.isChief()) ||
+                    (k.isChief() && k.isCanMoveNextRound()))
+            ).collect(Collectors.toList());
+
+            // Evaluate movement
+            if(nextCase.getRedCharacters().isEmpty() && !gobelins.isEmpty() && currentCase.getRedCharacters().isEmpty()) {
+                thirdCase.getBlueCharacters().addAll(gobelins);
+                currentCase.getBlueCharacters().removeAll(gobelins);
+            }
+            else if (currentCase.getRedCharacters().isEmpty() && !gobelins.isEmpty()) {
+                nextCase.getBlueCharacters().addAll(gobelins);
+                currentCase.getBlueCharacters().removeAll(gobelins);
+            }
+
+            if(!characters.isEmpty() && currentCase.getRedCharacters().isEmpty()) {
+                nextCase.getBlueCharacters().addAll(characters);
+                nextCase.getBlueCharacters().addAll(movingChiefs);
+                currentCase.getBlueCharacters().removeAll(characters);
+                currentCase.getBlueCharacters().removeAll(movingChiefs);
+
+                // Assignation des états pour le prochain tour
+                movingChiefs.forEach(c -> c.setCanMoveNextRound(false));
+                blockedChiefs.forEach(c -> c.setCanMoveNextRound(true));
             }
         }
 
@@ -91,23 +123,38 @@ public final class Battlefield {
         {
             final Case currentCase = this.getCase(i);
             final Case nextCase = this.getCase(i-1);
-            if(currentCase.getBlueCharacters().isEmpty() && !currentCase.getRedCharacters().isEmpty()) {
-                doMoveFromCase(currentCase, nextCase, RED);
+            final Case thirdCase = i - 2 > 0 ? this.getCase(i-2) : this.getCase(i-1);
+
+            final List<Character> gobelins = currentCase.getRedCharacters().stream().filter(k -> k instanceof Gobelin).collect(Collectors.toList());
+            final List<Character> movingChiefs = currentCase.getRedCharacters().stream().filter(k -> k.isChief() && k.isCanMoveNextRound()).collect(Collectors.toList());
+            final List<Character> blockedChiefs = currentCase.getRedCharacters().stream().filter(k -> k.isChief() && !k.isCanMoveNextRound()).collect(Collectors.toList());
+            final List<Character> characters = currentCase.getRedCharacters().stream().filter(k ->
+                !(k instanceof Gobelin) &&
+                (!(k.isChief()) ||
+                (k.isChief() && k.isCanMoveNextRound()))
+            ).collect(Collectors.toList());
+
+            // Evaluate movement
+            if(nextCase.getBlueCharacters().isEmpty() && !gobelins.isEmpty() && currentCase.getBlueCharacters().isEmpty()) {
+                thirdCase.getRedCharacters().addAll(gobelins);
+                currentCase.getRedCharacters().removeAll(gobelins);
+            }
+            else if (currentCase.getBlueCharacters().isEmpty() && !gobelins.isEmpty()) {
+                nextCase.getRedCharacters().addAll(gobelins);
+                currentCase.getRedCharacters().removeAll(gobelins);
+            }
+
+            if(!characters.isEmpty() && currentCase.getBlueCharacters().isEmpty()) {
+                nextCase.getRedCharacters().addAll(characters);
+                nextCase.getRedCharacters().addAll(movingChiefs);
+                currentCase.getRedCharacters().removeAll(characters);
+                currentCase.getRedCharacters().removeAll(movingChiefs);
+
+                // Assignation des états pour le prochain tour
+                movingChiefs.forEach(c -> c.setCanMoveNextRound(false));
+                blockedChiefs.forEach(c -> c.setCanMoveNextRound(true));
             }
         }
-    }
-
-    /**
-     * Déplace toutes les unité d'une couleur se trouvant sur la case courante vers la case suivante.
-     * @param currentCase la case où se trouve le curseur
-     * @param nextCase la case sur laquelle seront déplacé les éventuels créatures
-     * @param color la couleur de l'équipe
-     */
-    private void doMoveFromCase(Case currentCase, Case nextCase, TeamColor color) {
-        final ArrayList<Character> chars = color == BLUE ? currentCase.getBlueCharacters() : currentCase.getRedCharacters();
-        final ArrayList<Character> nextCaseChars = color == BLUE ? nextCase.getBlueCharacters() : nextCase.getRedCharacters();
-        nextCaseChars.addAll(chars);
-        chars.clear();
     }
 
     /**
@@ -144,6 +191,9 @@ public final class Battlefield {
                             break;
                         case 4:
                             newCharCreation = new ChefElfe();
+                            break;
+                        case 5:
+                            newCharCreation = new Gobelin();
                             break;
                     }
 
@@ -196,7 +246,9 @@ public final class Battlefield {
             }
         }catch(CriticalHitException e) {
             // TODO: afficher l'exception levée quelque part dans l'UI
-            targets.forEach(k -> {k.doDie(); targets.remove(k);});
+            targets.forEach(Character::doDie);
+            targets.clear();
+            Util.println("Critical Hit !");
         }
     }
 

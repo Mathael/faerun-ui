@@ -9,7 +9,7 @@
 
 <Pane fx:id="battlefield" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="350.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/8.0.76-ea" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <GridPane fx:id="game_grid" gridLinesVisible="false" layoutX="100.0" layoutY="75.0" prefHeight="200.0" prefWidth="900.0">
+      <GridPane fx:id="game_grid" layoutX="100.0" layoutY="75.0" prefHeight="200.0" prefWidth="900.0">
         <columnConstraints>
         </columnConstraints>
         <rowConstraints>

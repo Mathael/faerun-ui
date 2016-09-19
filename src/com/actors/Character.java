@@ -14,9 +14,13 @@ public abstract class Character implements Soldier {
     private int currentHealth;
     private int numberOfDice;
     private int cost;
+    private boolean canMoveNextRound;
+    private boolean isChief;
 
     public Character() {
         setCurrentHealth(100);
+        setCanMoveNextRound(true);
+        setChief(false);
     }
 
     public String getName() {
@@ -51,6 +55,22 @@ public abstract class Character implements Soldier {
         this.cost = cost;
     }
 
+    public boolean isCanMoveNextRound() {
+        return canMoveNextRound;
+    }
+
+    public void setCanMoveNextRound(boolean canMoveNextRound) {
+        this.canMoveNextRound = canMoveNextRound;
+    }
+
+    public boolean isChief() {
+        return isChief;
+    }
+
+    public void setChief(boolean chief) {
+        isChief = chief;
+    }
+
     /**
      * @return true si l'entité est considérée comme morte, false sinon
      */
@@ -65,7 +85,7 @@ public abstract class Character implements Soldier {
     @Override
     public void handleAttack(Character character) throws CriticalHitException {
         int dmg = Util.roll(3, getNumberOfDice());
-        if(dmg >= (getNumberOfDice() * 3) - 10) {
+        if(!(character instanceof Gobelin) && dmg >= (getNumberOfDice() * 3) - 2) {
             throw new CriticalHitException("Critical hit !");
         }
         character.handleReceiveDamage(dmg);

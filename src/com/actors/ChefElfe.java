@@ -9,6 +9,6 @@ public class ChefElfe extends GuerrierElfe {
         super();
         setName("Chef Elfe");
         setNumberOfDice(40);
-        setCost(4);
+        setCost(5);
     }
 }

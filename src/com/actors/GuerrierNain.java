@@ -8,7 +8,7 @@ public class GuerrierNain extends Character {
     public GuerrierNain() {
         super();
         setName("Guerrier Nain");
-        setCost(1);
+        setCost(2);
         setNumberOfDice(10);
     }
 

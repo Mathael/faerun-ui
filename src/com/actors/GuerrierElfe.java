@@ -8,7 +8,7 @@ public class GuerrierElfe extends Character
     public GuerrierElfe() {
         super();
         setName("Guerrier Elfe");
-        setCost(2);
+        setCost(3);
         setNumberOfDice(20);
     }
 }

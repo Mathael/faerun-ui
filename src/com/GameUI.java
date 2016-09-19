@@ -51,14 +51,14 @@ public final class GameUI {
         else
             dialogPane.lookup(".header-panel").setStyle("-fx-background-color: cornflowerblue; -fx-font-weight: bold");
 
-
-        final ButtonType buttonTypeDwarf = new ButtonType("Nain 1pts");
-        final ButtonType buttonTypeElf = new ButtonType("Elfe 2 pts");
-        final ButtonType buttonTypeDwarfChief = new ButtonType("Chef Nain 3pts");
-        final ButtonType buttonTypeElfChief = new ButtonType("Chef Elfe 4pts");
+        final ButtonType buttonTypeGobelin = new ButtonType("Gobelin 1pt");
+        final ButtonType buttonTypeDwarf = new ButtonType("Nain 2pts");
+        final ButtonType buttonTypeElf = new ButtonType("Elfe 3 pts");
+        final ButtonType buttonTypeDwarfChief = new ButtonType("Chef Nain 4pts");
+        final ButtonType buttonTypeElfChief = new ButtonType("Chef Elfe 5pts");
         final ButtonType buttonTypeSkip = new ButtonType("Passer");
 
-        alert.getButtonTypes().setAll(buttonTypeDwarf, buttonTypeElf, buttonTypeDwarfChief, buttonTypeElfChief, buttonTypeSkip);
+        alert.getButtonTypes().setAll(buttonTypeDwarf, buttonTypeElf, buttonTypeDwarfChief, buttonTypeElfChief, buttonTypeGobelin, buttonTypeSkip);
 
         final Optional<ButtonType> result = alert.showAndWait();
 
@@ -71,6 +71,8 @@ public final class GameUI {
             buyOption = 3;
         } else if(result.get() == buttonTypeElfChief) {
             buyOption = 4;
+        } else if(result.get() == buttonTypeGobelin) {
+            buyOption = 5;
         } else {
             buyOption = 0;
         }

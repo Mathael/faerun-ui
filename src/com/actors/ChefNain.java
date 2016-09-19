@@ -8,7 +8,7 @@ public class ChefNain extends GuerrierNain {
     public ChefNain() {
         super();
         setName("Chef Nain");
-        setCost(3);
+        setCost(4);
         setNumberOfDice(10);
     }
 
