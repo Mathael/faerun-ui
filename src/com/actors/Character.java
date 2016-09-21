@@ -7,7 +7,7 @@ import com.utils.Util;
 
 /**
  * @author Leboc Philippe
- * Cette classe représente une creature du jeu
+ * Cette classe représente une creature du jeu (n'importe laquelle)
  */
 public abstract class Character implements Soldier {
 

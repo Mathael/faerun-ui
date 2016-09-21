@@ -5,6 +5,7 @@ import com.exceptions.CriticalHitException;
 
 /**
  * @author Leboc Philippe
+ * Interface permettant de forcer les creature a implémenter ces méthodes
  */
 public interface Soldier {
 
