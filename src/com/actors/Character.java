@@ -95,7 +95,7 @@ public abstract class Character implements Soldier {
 
     @Override
     public void handleAttack(Character character) throws CriticalHitException {
-        int dmg = Util.roll(3, getNumberOfDice());
+        final int dmg = Util.roll(3, getNumberOfDice());
         if(!(character instanceof Gobelin) && dmg >= (getNumberOfDice() * 3) - 2) {
             throw new CriticalHitException("Critical hit !");
         }
