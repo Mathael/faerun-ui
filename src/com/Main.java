@@ -1,4 +1,4 @@
-package com;
+﻿package com;
 
 import com.enums.TeamColor;
 import com.model.Case;
@@ -14,7 +14,7 @@ import com.model.Battlefield;
 import java.io.File;
 
 /**
- * @author LEBOC Philippe
+ * @author LEBOC Philippe.
  */
 public class Main extends Application {
 
