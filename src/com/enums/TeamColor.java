@@ -4,8 +4,8 @@ package com.enums;
  * @author Leboc Philippe
  */
 public enum TeamColor {
-    RED("Rouge"),
-    BLUE("Bleu");
+    BLUE("Bleu"),
+    RED("Rouge");
 
     private String name;
 
